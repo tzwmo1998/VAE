@@ -1,2 +1,2 @@
 # VAE
-Variational AutoEncoder
+Variational AutoEncoder on DTU dataset
