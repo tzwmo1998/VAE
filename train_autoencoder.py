@@ -24,7 +24,7 @@ class VAESystem(pl.LightningModule):
         self.feat_size = (args.batch_size, 3,  args.img_downscale*512, args.img_downscale*640)
         # encoder, decoder
         if args.load_ckpt:
-            self.checkpoint = torch.load(args.ckpt_dir+'/32.tar')
+            self.checkpoint = torch.load(args.ckpt_dir+'/00.tar')
         else:
             self.checkpoint = None
         self.args = args
@@ -129,11 +129,11 @@ class VAESystem(pl.LightningModule):
         if self.current_epoch%1==0 and batch_idx==100:
             imgs = imgs.cpu()
             reconstruction = reconstruction.cpu()
-            output_path = args.exp_dir+'/'+str(self.current_epoch+53)
+            output_path = args.exp_dir+'/'+str(self.current_epoch)
             os.makedirs(output_path,exist_ok=True)
             for i in range(batch.size(0)//2):
-                path_test = f'{output_path}/{self.current_epoch+53:02d}_{i:02d}.png'
-                path_gt = f'{output_path}/{self.current_epoch+53:02d}_{i:02d}_{"gt"}.png'
+                path_test = f'{output_path}/{self.current_epoch:02d}_{i:02d}.png'
+                path_gt = f'{output_path}/{self.current_epoch:02d}_{i:02d}_{"gt"}.png'
                 img = reconstruction[i].numpy()
                 img_gt = imgs[i].numpy()
                 imageio.imwrite(path_test, (img*255).astype('uint8'))
@@ -188,12 +188,12 @@ class VAESystem(pl.LightningModule):
         
         imgs = imgs.cpu()
         x_hat = x_hat.cpu()
-        output_path = args.exp_dir+'/'+str(self.current_epoch+53)+'/val'
+        output_path = args.exp_dir+'/'+str(self.current_epoch)+'/val'
         os.makedirs(output_path,exist_ok=True)
         if batch_idx==0:
             for i in range(batch.size(0)):
-                path_test = f'{output_path}/{self.current_epoch+53:02d}_{i:02d}.png'
-                path_gt = f'{output_path}/{self.current_epoch+53:02d}_{i:02d}_{"gt"}.png'
+                path_test = f'{output_path}/{self.current_epoch:02d}_{i:02d}.png'
+                path_gt = f'{output_path}/{self.current_epoch:02d}_{i:02d}_{"gt"}.png'
                 img = x_hat[i].numpy()
                 img_gt = imgs[i].numpy()
                 imageio.imwrite(path_test, (img*255).astype('uint8'))
@@ -211,7 +211,7 @@ class VAESystem(pl.LightningModule):
     def save_ckpt(self):
         ckpt_path = self.args.ckpt_dir
         os.makedirs(ckpt_path, exist_ok=True)
-        path = f'{ckpt_path}/{self.current_epoch+53:02d}.tar'
+        path = f'{ckpt_path}/{self.current_epoch:02d}.tar'
         torch.save({
             "epoch": self.current_epoch, 
             "encoder_state_dict": self.model.encoder.state_dict(),
